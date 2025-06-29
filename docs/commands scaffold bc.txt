@@ -1,0 +1,8 @@
+ca --package=co.com.pragma.usersms --type=reactive --name=users-ms --lombok=true --javaVersion=VERSION_21
+
+gradle gm --name users
+gradle guc --name users
+
+gradle generateDrivenAdapter --type=r2dbc
+
+gradle generateEntryPoint --type=webflux

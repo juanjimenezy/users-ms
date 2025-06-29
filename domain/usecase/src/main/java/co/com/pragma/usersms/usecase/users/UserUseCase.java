@@ -1,6 +1,7 @@
 package co.com.pragma.usersms.usecase.users;
 
 import co.com.pragma.usersms.model.users.User;
+import co.com.pragma.usersms.model.users.gateways.ReqresRepository;
 import co.com.pragma.usersms.model.users.gateways.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 public class UserUseCase {
 
     private final UserRepository userRepository;
+    private final ReqresRepository reqresRepository;
 
     public Mono<User> getUserByIdentifier(Long id) {
         return userRepository.findById(id);
@@ -24,8 +26,12 @@ public class UserUseCase {
         return userRepository.findByName(name);
     }
 
-    public Mono<User> createUser(User user) {
-        return userRepository.save(user);
+    public Mono<User> createUser(Long id) {
+        return reqresRepository.getUserById(id)
+                .flatMap(u -> {
+                    System.out.println(">>>" + u.getEmail());
+                    return userRepository.save(u);
+                });
     }
 
 }

@@ -21,7 +21,6 @@ public class ReqresResponseDTO {
 
         @JsonProperty("last_name")
         private String lastName;
-
         private String avatar;
     }
 }

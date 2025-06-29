@@ -12,6 +12,7 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class User {
     private Long id;
+    private Long idReqres;
     private String email;
     private String firstName;
     private String lastName;

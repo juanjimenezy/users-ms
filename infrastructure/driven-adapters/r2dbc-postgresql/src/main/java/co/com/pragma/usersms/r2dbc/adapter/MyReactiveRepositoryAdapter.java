@@ -28,4 +28,11 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<User,
                 userEntity -> mapper.map(userEntity, User.class)
         );
     }
+
+    @Override
+    public Mono<User> findByIdReqres(Long idReqres) {
+        return repository.findByIdReqres(idReqres).map(
+                userEntity -> mapper.map(userEntity, User.class)
+        );
+    }
 }

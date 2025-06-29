@@ -21,6 +21,7 @@ public class RestConsumer implements ReqresRepository{
                 .bodyToMono(ReqresResponseDTO.class)
                 .flatMap(p -> {
                     User user = new User();
+                    user.setIdReqres(p.getData().getId());
                     user.setEmail(p.getData().getEmail());
                     user.setFirstName(p.getData().getFirstName());
                     user.setLastName(p.getData().getLastName());

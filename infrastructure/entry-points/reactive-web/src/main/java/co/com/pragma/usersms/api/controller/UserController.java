@@ -20,20 +20,27 @@ public class UserController {
     @PostMapping("/{id}")
     public Mono<ResponseEntity<UserResponseDTO>> createUser(@PathVariable("id") Long id) {
         return userUseCase.createUser(id)
-                .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.CREATED.getReasonPhrase(), "User created successfully")))
-                .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.getReasonPhrase(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
-                .onErrorResume(error -> {
-                    return Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.getReasonPhrase(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND));
-                });
+                .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.CREATED.value(), "User created successfully")))
+                .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.CONFLICT.value(), "Ya este usuario fue creado"), HttpStatus.CONFLICT)));
     }
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<UserResponseDTO>> getUserById(@PathVariable("id") Long id) {
         return userUseCase.getUserByIdentifier(id)
-                .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.OK.getReasonPhrase(), "User retrieved successfully")))
-                .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.getReasonPhrase(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
+                .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.OK.value(), "User retrieved successfully")))
+                .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.value(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
                 .onErrorResume(error -> {
-                    return Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.getReasonPhrase(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND));
+                    return Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.value(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND));
+                });
+    }
+
+    @GetMapping("/reqres/{id}")
+    public Mono<ResponseEntity<UserResponseDTO>> getUserByIdReqres(@PathVariable("id") Long id) {
+        return userUseCase.getUserByReqresId(id)
+                .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.OK.value(), "User retrieved successfully")))
+                .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.value(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
+                .onErrorResume(error -> {
+                    return Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.value(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND));
                 });
     }
 
@@ -43,10 +50,11 @@ public class UserController {
         return Mono.just(ResponseEntity.ok(usersFlux));
     }
 
-    private UserResponseDTO createResponseDTO(User user, String codeMessage, String message) {
+    private UserResponseDTO createResponseDTO(User user, int codeMessage, String message) {
         if (user != null) {
             return UserResponseDTO.builder()
                     .id(user.getId())
+                    .idReqres(user.getIdReqres())
                     .email(user.getEmail())
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())

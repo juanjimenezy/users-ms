@@ -29,9 +29,9 @@ public class UserController {
         return userUseCase.getUserByIdentifier(id)
                 .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.OK.value(), "User retrieved successfully")))
                 .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.value(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
-                .onErrorResume(error -> {
-                    return Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.value(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND));
-                });
+                .onErrorResume(error ->
+                    Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.value(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND))
+                );
     }
 
     @GetMapping("/reqres/{id}")
@@ -39,9 +39,15 @@ public class UserController {
         return userUseCase.getUserByReqresId(id)
                 .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.OK.value(), "User retrieved successfully")))
                 .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.value(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
-                .onErrorResume(error -> {
-                    return Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.value(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND));
-                });
+                .onErrorResume(error ->
+                     Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NOT_FOUND.value(), "Error:".concat(error.getMessage())), HttpStatus.NOT_FOUND))
+                );
+    }
+
+    @GetMapping("/name/{name}")
+    public Mono<ResponseEntity<Flux<User>>> getUsersByName(@PathVariable("name") String name) {
+        Flux<User> usersFlux = userUseCase.getUsersByName(name);
+        return Mono.just(ResponseEntity.ok(usersFlux));
     }
 
     @GetMapping

@@ -18,7 +18,7 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<User,
 
     @Override
     public Flux<User> findByName(String name) {
-        return repository.findByFirstName(name)
+        return repository.findByFirstNameOrLastNameLike(name)
                 .map(userEntity -> mapper.map(userEntity, User.class));
     }
 

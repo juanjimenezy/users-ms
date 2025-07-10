@@ -11,6 +11,10 @@ spring:
       path: "/h2"
   profiles:
     include: null
+  data:
+    redis:
+      host: "localhost"
+      port: 6379
 adapters:
   r2dbc:
     host: "localhost"

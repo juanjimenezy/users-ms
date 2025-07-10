@@ -2,6 +2,7 @@ package co.com.pragma.usersms.usecase.users;
 
 import co.com.pragma.usersms.model.users.User;
 import co.com.pragma.usersms.model.users.gateways.ReqresRepository;
+import co.com.pragma.usersms.model.users.gateways.UserRedisRepository;
 import co.com.pragma.usersms.model.users.gateways.UserRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -12,9 +13,21 @@ public class UserUseCase {
 
     private final UserRepository userRepository;
     private final ReqresRepository reqresRepository;
+    private final UserRedisRepository userRedisRepository;
 
     public Mono<User> getUserByIdentifier(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Mono<User> getUserByIdentifierInRedis(Long id) {
+        return userRedisRepository.getUserRedis(id.toString())
+                .map(user -> {
+                    System.out.println("Se obtuvo usuario de redis: ".concat(user.getFirstName()));
+                    return user;
+                })
+                .switchIfEmpty(userRepository.findById(id)
+                                .flatMap(user -> userRedisRepository.saveRedis(id.toString(), user))
+                );
     }
 
     public Mono<User> getUserByReqresId(Long idReqres) {

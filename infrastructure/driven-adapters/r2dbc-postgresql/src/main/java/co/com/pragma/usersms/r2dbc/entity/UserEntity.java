@@ -14,6 +14,9 @@ public class UserEntity {
     @Id
     private Long id;
 
+    @Column("id_reqres")
+    private Long idReqres;
+
     @Column("email")
     private String email;
 

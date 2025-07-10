@@ -1,5 +1,6 @@
 package co.com.pragma.usersms.config;
 
+import co.com.pragma.usersms.model.users.gateways.ReqresRepository;
 import co.com.pragma.usersms.model.users.gateways.UserRepository;
 import co.com.pragma.usersms.usecase.users.UserUseCase;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +17,8 @@ import org.springframework.context.annotation.FilterType;
 public class UseCasesConfig {
 
         @Bean
-        public UserUseCase userUseCase(UserRepository userRepository) {
-                return new UserUseCase(userRepository);
+        public UserUseCase userUseCase(UserRepository userRepository, ReqresRepository reqresRepository) {
+                return new UserUseCase(userRepository, reqresRepository);
         }
 
 }

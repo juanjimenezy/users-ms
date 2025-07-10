@@ -18,13 +18,20 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<User,
 
     @Override
     public Flux<User> findByName(String name) {
-        return repository.findByFirstName(name)
+        return repository.findByFirstNameOrLastNameLike(name)
                 .map(userEntity -> mapper.map(userEntity, User.class));
     }
 
     @Override
     public Mono<User> findById(Long id) {
         return repository.findById(id).map(
+                userEntity -> mapper.map(userEntity, User.class)
+        );
+    }
+
+    @Override
+    public Mono<User> findByIdReqres(Long idReqres) {
+        return repository.findByIdReqres(idReqres).map(
                 userEntity -> mapper.map(userEntity, User.class)
         );
     }

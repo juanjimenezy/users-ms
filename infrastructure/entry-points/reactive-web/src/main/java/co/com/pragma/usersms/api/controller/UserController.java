@@ -26,7 +26,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<UserResponseDTO>> getUserById(@PathVariable("id") Long id) {
-        return userUseCase.getUserByIdentifier(id)
+        return userUseCase.getUserByIdentifierInRedis(id)
                 .map(user -> ResponseEntity.ok(createResponseDTO(user, HttpStatus.OK.value(), "User retrieved successfully")))
                 .switchIfEmpty(Mono.just(new ResponseEntity<>(createResponseDTO(null, HttpStatus.NO_CONTENT.value(), "No hay datos para el id proporcionado"), HttpStatus.OK)))
                 .onErrorResume(error ->

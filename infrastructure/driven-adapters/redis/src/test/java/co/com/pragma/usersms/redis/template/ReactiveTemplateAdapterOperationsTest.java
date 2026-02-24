@@ -25,6 +25,7 @@ class ReactiveRedisTemplateAdapterOperationsTest {
 
     @BeforeEach
     void setUp() {
+        Long expirationMillis = 60000L;
         user = User.builder()
                 .id(1L)
                 .idReqres(1L)
@@ -36,7 +37,7 @@ class ReactiveRedisTemplateAdapterOperationsTest {
 
         when(objectMapper.map("value", Object.class)).thenReturn("value");
 
-        adapter = new ReactiveRedisTemplateAdapter(connectionFactory, objectMapper);
+        adapter = new ReactiveRedisTemplateAdapter(connectionFactory, objectMapper, expirationMillis);
     }
 
     @Test

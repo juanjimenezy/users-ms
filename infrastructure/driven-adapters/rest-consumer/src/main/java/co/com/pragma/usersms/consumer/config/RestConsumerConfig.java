@@ -21,10 +21,14 @@ public class RestConsumerConfig {
 
     private final int timeout;
 
-    public RestConsumerConfig(@Value("https://reqres.in/api") String url,
-                              @Value("${adapter.restconsumer.timeout}") int timeout) {
+    private final String apiKey;
+
+    public RestConsumerConfig(@Value("${adapter.restconsumer.url}") String url,
+                              @Value("${adapter.restconsumer.timeout}") int timeout,
+                              @Value("${adapter.restconsumer.api-key}") String apiKey) {
         this.url = url;
         this.timeout = timeout;
+        this.apiKey = apiKey;
     }
 
     @Bean
@@ -32,7 +36,7 @@ public class RestConsumerConfig {
         return builder
             .baseUrl(url)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-            .defaultHeader("x-api-key", "reqres-free-v1")
+            .defaultHeader("x-api-key", apiKey)
             .clientConnector(getClientHttpConnector())
             .build();
     }

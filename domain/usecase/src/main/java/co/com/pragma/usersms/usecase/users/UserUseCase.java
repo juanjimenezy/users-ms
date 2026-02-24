@@ -25,13 +25,9 @@ public class UserUseCase {
                     System.out.println("Se obtuvo usuario de redis: ".concat(user.getFirstName()));
                     return user;
                 })
-                .switchIfEmpty(userRepository.findById(id)
+                .switchIfEmpty(userRepository.findByIdReqres(id)
                                 .flatMap(user -> userRedisRepository.saveRedis(id.toString(), user))
                 );
-    }
-
-    public Mono<User> getUserByReqresId(Long idReqres) {
-        return userRepository.findByIdReqres(idReqres);
     }
 
     public Flux<User> getAllUsers() {

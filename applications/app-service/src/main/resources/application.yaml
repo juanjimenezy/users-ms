@@ -43,6 +43,10 @@ adapter:
     timeout: 5000
     url: "https://reqres.in/api"
     api-key: "reqres_d5c8fac463f04829b41cc5daa9158baf"
+  sqs:
+    region: "us-east-1"
+    queueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/usuarios-queue"
+    endpoint: "http://localhost:4566"
 resilience4j:
   circuitbreaker:
     instances:

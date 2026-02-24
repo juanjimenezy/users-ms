@@ -23,7 +23,7 @@ adapters:
     password: "root"
     database: "postgres"
     schema: "users"
-    username: "postgres"
+    username: "users"
 management:
   endpoints:
     web:

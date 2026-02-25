@@ -1,10 +1,7 @@
 package co.com.pragma.usersms.usecase.users;
 
 import co.com.pragma.usersms.model.users.User;
-import co.com.pragma.usersms.model.users.gateways.ReqresRepository;
-import co.com.pragma.usersms.model.users.gateways.UserRedisRepository;
-import co.com.pragma.usersms.model.users.gateways.UserRepository;
-import co.com.pragma.usersms.model.users.gateways.UserSqsGateway;
+import co.com.pragma.usersms.model.users.gateways.*;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,21 +11,22 @@ public class UserUseCase {
 
     private final UserRepository userRepository;
     private final ReqresRepository reqresRepository;
-    private final UserRedisRepository userRedisRepository;
-    private final UserSqsGateway userSqsGateway;
+    private final UserCacheRepository userCacheRepository;
+    private final UserNotificationGateway userNotificationGateway;
+    private final UserGateway userGateway;
 
     public Mono<User> getUserByIdentifier(Long id) {
         return userRepository.findById(id);
     }
 
     public Mono<User> getUserByIdentifierInRedis(Long id) {
-        return userRedisRepository.getUserRedis(id.toString())
+        return userCacheRepository.getUser(id.toString())
                 .map(user -> {
                     System.out.println("Se obtuvo usuario de redis: ".concat(user.getFirstName()));
                     return user;
                 })
                 .switchIfEmpty(userRepository.findByIdReqres(id)
-                                .flatMap(user -> userRedisRepository.saveRedis(id.toString(), user))
+                                .flatMap(user -> userCacheRepository.saveUser(id.toString(), user))
                 );
     }
 
@@ -41,18 +39,15 @@ public class UserUseCase {
     }
 
     public Mono<User> createUser(Long id) {
-        /*return reqresRepository.getUserById(id)
-                .flatMap(user -> userRepository.findByIdReqres(user.getIdReqres())
-                        .switchIfEmpty(userRepository.save(user)
-                                .flatMap(userSaved -> userSqsGateway.sendUserCreatedEvent(userSaved).thenReturn(userSaved)))
-                );
-
-         */
         return userRepository.findById(id)
                 .switchIfEmpty(reqresRepository.getUserById(id)
                         .flatMap(userRepository::save)
-                        .flatMap(userSaved -> userSqsGateway.sendUserCreatedEvent(userSaved).thenReturn(userSaved))
+                        .flatMap(userSaved -> userNotificationGateway.sendUserCreatedEvent(userSaved).thenReturn(userSaved))
                 );
+    }
+
+    public Mono<User> saveUserInDynamo(User user) {
+        return userGateway.saveUser(user);
     }
 
 }

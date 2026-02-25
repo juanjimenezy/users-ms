@@ -1,7 +1,7 @@
 package co.com.pragma.usersms.sqs.sender;
 
 import co.com.pragma.usersms.model.users.User;
-import co.com.pragma.usersms.model.users.gateways.UserSqsGateway;
+import co.com.pragma.usersms.model.users.gateways.UserNotificationGateway;
 import co.com.pragma.usersms.sqs.sender.config.SQSSenderProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class SQSSender implements UserSqsGateway {
+public class NotificationSender implements UserNotificationGateway {
 
     private final SQSSenderProperties properties;
     private final SqsAsyncClient client;

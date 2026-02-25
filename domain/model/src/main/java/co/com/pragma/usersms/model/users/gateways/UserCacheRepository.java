@@ -3,9 +3,9 @@ package co.com.pragma.usersms.model.users.gateways;
 import co.com.pragma.usersms.model.users.User;
 import reactor.core.publisher.Mono;
 
-public interface UserRedisRepository {
+public interface UserCacheRepository {
 
-    Mono<User> getUserRedis(String key);
-    Mono<User> saveRedis(String key, User user);
+    Mono<User> getUser(String key);
+    Mono<User> saveUser(String key, User user);
 
 }

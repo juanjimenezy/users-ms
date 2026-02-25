@@ -1,11 +1,13 @@
 package co.com.pragma.usersms.config;
 
+import co.com.pragma.usersms.model.users.gateways.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class UseCasesConfigTest {
 
@@ -22,7 +24,7 @@ public class UseCasesConfigTest {
                 }
             }
 
-            assertTrue(useCaseBeanFound, "No beans ending with 'Use Case' were found");
+            assertTrue(useCaseBeanFound, "No beans ending with 'UseCase' were found");
         }
     }
 
@@ -31,8 +33,28 @@ public class UseCasesConfigTest {
     static class TestConfig {
 
         @Bean
-        public MyUseCase myUseCase() {
-            return new MyUseCase();
+        public UserRepository userRepository() {
+            return mock(UserRepository.class);
+        }
+
+        @Bean
+        public ReqresRepository reqresRepository() {
+            return mock(ReqresRepository.class);
+        }
+
+        @Bean
+        public UserCacheRepository userCacheRepository() {
+            return mock(UserCacheRepository.class);
+        }
+
+        @Bean
+        public UserNotificationGateway userNotificationGateway() {
+            return mock(UserNotificationGateway.class);
+        }
+
+        @Bean
+        public UserGateway userGateway() {
+            return mock(UserGateway.class);
         }
     }
 
